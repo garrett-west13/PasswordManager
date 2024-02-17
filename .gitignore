@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+
+# Flask
+instance/
+
+# SQLite3
+*.db
+
+# Node.js
+node_modules/
+
+# JavaScript
+*.js.map
+
+# VSCode
+.vscode/
