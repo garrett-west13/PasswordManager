@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Manager
+{% endblock %}
+
+{% block main %}
+    
+    <div class="container">
+        <h2>Manage Passwords</h2>
+        <div class="row mt-4 mb-4">
+            <div class="col">
+                <form action="/search" method="post">
+                    <input name="search" type="search" class="search" placeholder="search">
+                    <button class="btn-outline-light rounded" type="submit">submit</button>
+                </form>
+            </div>
+            <div class="col">
+                <form action="/generate" method="post">
+                    <input name="generate" type="button" class="btn-outline-dark" value="Generate Password">
+                </form>
+                <p class="mt-2 border">placeholder password</p>
+            </div>
+            <div class="col">
+                <form action="/sort" method="post">
+                    <select name="sort" class="form-select" aria-label="Default select example">
+                        <option value="website">Sort by Website</option>
+                        <option value="username">Sort by Username</option>
+                        <option value="email">Sort by Email</option>
+                        <option value="password">Sort by Password</option>
+                        <option value="notes">Sort by Notes</option>
+                    </select>
+                    <button class="btn-outline-light rounded mt-2" type="submit">Sort</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="form-control mt-4">
+            <div class="row">
+              <div class="col">
+                <form action="/add" method="post">
+                  <input name="add" type="button" class="btn btn-primary" value="Add">
+                </form>
+              </div>
+              <div class="col">
+                <form action="/edit" method="post">
+                  <input name="edit" type="button" class="btn btn-secondary" value="Edit">
+                </form>
+              </div>
+              <div class="col">
+                <form action="/delete" method="post">
+                  <input name="delete" type="button" class="btn btn-danger" value="Delete">
+                </form>
+              </div>
+            </div>
+          </div>
+
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Website</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Palceholders -->
+            <tr>
+              <td>1</td>
+              <td>John Doe</td>
+              <td>john@example.com</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Jane Smith</td>
+              <td>jane@example.com</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}
