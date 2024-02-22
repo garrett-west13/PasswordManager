@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Password
+{% endblock %}
+
+{% block main %}
+    
+<div class="container">
+    <h2>Add Password</h2>
+    <form action="/add" method="post">
+        <div class="row justify-content-center border bg-light">
+            <div class="col-auto">
+                <div class="mb-3">
+                    <label for="website" class="form-label">Website</label>
+                    <input type="url" class="form-control" id="website" name="website" required>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes</label>
+                    <textarea class="form-control" id="notes" name="notes"></textarea>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Add Password</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
