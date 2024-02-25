@@ -8,10 +8,14 @@
     <h2>Log In</h2>
     <form action="/login" method="post">
         <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text" required>
         </div>
         <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password" required>
+        </div>
+        <div class="mb-3">
+            <label for="pin">Enter 4-Digit PIN:</label>
+            <input class="form-control mx-auto w-auto" type="password" id="pin" name="pin" minlength="4" maxlength="4" placeholder="****" required>
         </div>
         <button class="btn btn-primary" type="submit">Log In</button>
     </form>

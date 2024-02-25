@@ -21,3 +21,6 @@ node_modules/
 
 # VSCode
 .vscode/
+
+# Session data
+flask_session/

@@ -61,16 +61,21 @@
           </thead>
           <tbody>
             <!-- Palceholders -->
+            {% for row in rows%}
             <tr>
-              <td>1</td>
-              <td>John Doe</td>
-              <td>john@example.com</td>
+              <td>{{ row.website }}</td>
+              <td>{{ row.username }}</td>
+              <td>{{ row.email }}</td>
+              <td>{% if pin_verified %}
+                <!-- Show sensitive fields -->
+                Password: {{ row.password }}
+              {% else %}
+                <!-- Show placeholder or message -->
+                <p>Enter PIN to view password</p>
+              {% endif %}</td>
+              <td>{{ row.notes }}</td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>Jane Smith</td>
-              <td>jane@example.com</td>
-            </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>

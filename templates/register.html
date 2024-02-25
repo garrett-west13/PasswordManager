@@ -14,6 +14,10 @@
             <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
             <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirmation" type="password">
         </div>
+        <div class="mb-3">
+            <label for="pin">Enter 4-Digit PIN:</label>
+            <input class="form-control mx-auto w-auto" type="password" id="pin" name="pin" minlength="4" maxlength="4" placeholder="****" required>
+        </div>
         <button class="btn btn-primary" type="submit">Register</button>
     </form>
 {% endblock %}
