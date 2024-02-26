@@ -1,7 +1,7 @@
 import re
 import os
 
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, jsonify, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from cryptography.fernet import Fernet
@@ -49,9 +49,11 @@ def index():
         for item in table:
             decrypted_row = {}
             decryption_successful = True  # Flag to track decryption success for the entire row
-            for field in ["website", "username", "email", "password", "notes"]:
+            for field in ["id", "website", "username", "email", "password", "notes"]:
                 encrypted_data = item[field]
-                if encrypted_data is not None:
+                if field == "id":
+                    decrypted_row[field] = encrypted_data 
+                elif encrypted_data is not None:
                     try:
                         decrypted_data = cipher.decrypt(encrypted_data).decode()
                         decrypted_row[field] = decrypted_data
@@ -61,9 +63,10 @@ def index():
                         decryption_successful = False  # Set flag to False if decryption fails for any field
                 else:
                     decrypted_row[field] = None
+                    
             if decryption_successful:
                 rows.append(decrypted_row)
-
+        db.close()
         print(rows)
 
         # Get username from the database
@@ -85,15 +88,12 @@ def login():
         # Ensure username and password were submitted
         username = request.form.get("username")
         password = request.form.get("password")
-        pin = request.form.get("pin_hash")
+        pin = request.form.get("pin")
         if not username:
             flash("Must provide username", "error")
             return redirect(url_for("login"))
         elif not password:
             flash("Must provide password", "error")
-            return redirect(url_for("login"))
-        elif not pin:
-            flash("Must provide pin", "error")
             return redirect(url_for("login"))
 
         # Query database for username
@@ -101,7 +101,6 @@ def login():
         user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
         db.close()
 
-        # Verify password
         if user and check_password_hash(user["password"], password):
             # Verify PIN
             pin_hash = user["pin_hash"]
@@ -118,6 +117,8 @@ def login():
         else:
             flash("Invalid username and/or password", "error")
             return redirect(url_for("login"))
+    else:
+        return render_template("login.html")
 
 @app.route("/logout")
 def logout():
@@ -256,3 +257,86 @@ def add():
     else:
         redirect("/login")
 
+@app.route("/verify_pin", methods=["POST"])
+def verify_pin():
+    # Extract PIN from the request data
+    pin = request.json.get("pin")
+
+    if not pin:
+        return jsonify({"success": False, "message": "PIN is required."}), 400
+
+    # Query database for user's PIN hash
+    db = get_db_connection()
+    user = db.execute("SELECT pin_hash FROM users WHERE id = ?", (session["user_id"],)).fetchone()
+    db.close()
+
+    if not user:
+        return jsonify({"success": False, "message": "User not found."}), 404
+
+    # Check if the provided PIN matches the stored PIN hash
+    pin_hash = user["pin_hash"]
+    if check_password_hash(pin_hash, pin):
+        # PIN is verified
+        session["pin_verified"] = True  # Set pin_verified to True
+        return jsonify({"success": True}), 200
+    else:
+        # PIN verification failed
+        return jsonify({"success": False, "message": "Incorrect PIN."}), 401
+
+@app.route("/edit/<int:password_id>", methods=["GET", "POST"])
+def edit_password(password_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        # Handle form submission to update password
+        # Extract form data
+        website = request.form.get("website")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        notes = request.form.get("notes")
+
+        # Get password_id from the form
+        form_password_id = request.form.get("password_id")
+
+        # Ensure that the password_id from the URL matches the password_id from the form
+        if int(form_password_id) != password_id:
+            flash("Invalid password ID", "error")
+            return redirect(url_for("index"))
+
+        # Update database entry
+        db = get_db_connection()
+        db.execute("UPDATE passwords SET website = ?, username = ?, email = ?, password = ?, notes = ? WHERE id = ? AND user_id = ?",
+                   (website, username, email, password, notes, password_id, session["user_id"]))
+        db.commit()
+        db.close()
+
+        flash("Password updated successfully", "success")
+        return redirect(url_for("index"))
+    else:
+        # Retrieve existing password details
+        db = get_db_connection()
+        password_row = db.execute("SELECT * FROM passwords WHERE id = ? AND user_id = ?", (password_id, session["user_id"])).fetchone()
+        db.close()
+
+        if password_row:
+            # Decrypt password details
+            decrypted_row = {}
+            for field in ["website", "username", "email", "password", "notes"]:
+                encrypted_data = password_row[field]
+                if encrypted_data is not None:
+                    try:
+                        decrypted_data = cipher.decrypt(encrypted_data).decode()
+                        decrypted_row[field] = decrypted_data
+                    except Exception as e:
+                        # Handle decryption errors gracefully
+                        decrypted_row[field] = f"Decryption Error: {str(e)}"
+                else:
+                    decrypted_row[field] = None
+
+            # Pass password_id to the template
+            return render_template("edit.html", password=decrypted_row, password_id=password_id)
+        else:
+            flash("Password not found or unauthorized", "error")
+            return redirect(url_for("index"))

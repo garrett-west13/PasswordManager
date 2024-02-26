@@ -13,7 +13,8 @@
             <div class="col-auto">
                 <div class="mb-3">
                     <label for="website" class="form-label">Website</label>
-                    <input type="url" class="form-control" id="website" name="website" required>
+                    <input type="text" class="form-control" id="website" name="website" required>
+                    <button class="btn btn-secondary mt-2" id="convertBtn">Convert</button>
                 </div>
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
@@ -38,4 +39,21 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById("convertBtn").addEventListener("click", function() {
+        var domain = document.getElementById("website").value.trim();
+        if (domain !== "") {
+            // Check if the domain contains ".com"
+            if (!domain.includes(".com")) {
+                domain += ".com";
+            }
+            // Check if the domain starts with "http://" or "https://"
+            if (!domain.startsWith("http://") && !domain.startsWith("https://")) {
+                domain = "https://" + domain;
+            }
+            document.getElementById("website").value = domain;
+        }
+    });
+</script>
 {% endblock %}
