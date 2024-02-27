@@ -63,7 +63,7 @@ def index():
                         decryption_successful = False  # Set flag to False if decryption fails for any field
                 else:
                     decrypted_row[field] = None
-                    
+
             if decryption_successful:
                 rows.append(decrypted_row)
         db.close()
@@ -283,6 +283,7 @@ def verify_pin():
         # PIN verification failed
         return jsonify({"success": False, "message": "Incorrect PIN."}), 401
 
+
 @app.route("/edit/<int:password_id>", methods=["GET", "POST"])
 def edit_password(password_id):
     if "user_id" not in session:
@@ -297,6 +298,13 @@ def edit_password(password_id):
         password = request.form.get("password")
         notes = request.form.get("notes")
 
+        # Encrypt data
+        encrypted_website = cipher.encrypt(website.encode()) if website else None
+        encrypted_username = cipher.encrypt(username.encode()) if username else None
+        encrypted_email = cipher.encrypt(email.encode()) if email else None
+        encrypted_password = cipher.encrypt(password.encode()) if password else None
+        encrypted_notes = cipher.encrypt(notes.encode()) if notes else None
+
         # Get password_id from the form
         form_password_id = request.form.get("password_id")
 
@@ -308,7 +316,7 @@ def edit_password(password_id):
         # Update database entry
         db = get_db_connection()
         db.execute("UPDATE passwords SET website = ?, username = ?, email = ?, password = ?, notes = ? WHERE id = ? AND user_id = ?",
-                   (website, username, email, password, notes, password_id, session["user_id"]))
+                   (encrypted_website, encrypted_username, encrypted_email, encrypted_password, encrypted_notes, password_id, session["user_id"]))
         db.commit()
         db.close()
 
@@ -340,3 +348,30 @@ def edit_password(password_id):
         else:
             flash("Password not found or unauthorized", "error")
             return redirect(url_for("index"))
+        
+@app.route("/delete", methods=["POST"])
+def delete_passwords():
+    if request.method == "POST":
+        # Get the IDs of selected rows to delete
+        selected_ids = request.form.getlist("select")
+
+        if not selected_ids:
+            return "No rows selected for deletion"
+
+        # Convert IDs to integers
+        selected_ids = [int(id) for id in selected_ids]
+
+        # Delete the selected rows from the database
+        db = get_db_connection()
+        for id in selected_ids:
+            db.execute("DELETE FROM passwords WHERE id = ?", (id,))
+        db.commit()
+        db.close()
+
+        flash("Selected rows deleted successfully")
+        return redirect(url_for('index')
+)
+
+    flash("Method not allowed", 405)
+    return redirect(url_for('index')
+)

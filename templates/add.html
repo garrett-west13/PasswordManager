@@ -11,10 +11,15 @@
     <form action="/add" method="post">
         <div class="row justify-content-center border bg-light">
             <div class="col-auto">
+                <div class="col">
+                    <form action="/generate" method="post">
+                        <input name="generate" type="button" class="btn-secondary mt-2" value="Generate Password">
+                    </form>
+                    <p class="mt-2 border">placeholder password</p>
                 <div class="mb-3">
                     <label for="website" class="form-label">Website</label>
-                    <input type="text" class="form-control" id="website" name="website" required>
-                    <button class="btn btn-secondary mt-2" id="convertBtn">Convert</button>
+                    <!-- Add onchange event listener to trigger conversion -->
+                    <input type="text" class="form-control" id="website" name="website" required onchange="convertToURL()">
                 </div>
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
@@ -41,11 +46,11 @@
 </div>
 
 <script>
-    document.getElementById("convertBtn").addEventListener("click", function() {
+    function convertToURL() {
         var domain = document.getElementById("website").value.trim();
         if (domain !== "") {
             // Check if the domain contains ".com"
-            if (!domain.includes(".com")) {
+            if (!domain.includes(".com", ".org", ".net", ".edu", ".gov", ".io", ".co", ".xyz", ".info")) {
                 domain += ".com";
             }
             // Check if the domain starts with "http://" or "https://"
@@ -54,6 +59,6 @@
             }
             document.getElementById("website").value = domain;
         }
-    });
+    }
 </script>
 {% endblock %}

@@ -7,51 +7,47 @@
 {% block main %}
     
     <div class="container">
-        <h2>Manage Passwords</h2>
-        <div class="row mt-4 mb-4">
-            <div class="col">
-                <form action="/search" method="post">
-                    <input name="search" type="search" class="search" placeholder="search">
-                    <button class="btn-outline-light rounded" type="submit">submit</button>
+      <h2>Manage Passwords</h2>
+      <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between">
+                <form action="/search" method="post" class="d-flex">
+                    <input name="search" type="search" class="form-control me-2" placeholder="Search">
+                    <button class="btn btn-outline-light" type="submit">Submit</button>
                 </form>
-            </div>
-            <div class="col">
-                <form action="/generate" method="post">
-                    <input name="generate" type="button" class="btn-outline-dark" value="Generate Password">
-                </form>
-                <p class="mt-2 border">placeholder password</p>
-            </div>
-            <div class="col">
-                <form action="/sort" method="post">
-                    <select name="sort" class="form-select" aria-label="Default select example">
+                <form action="/sort" method="post" class="d-flex align-items-center">
+                    <select name="sort" class="form-select me-2" aria-label="Default select example">
                         <option value="website">Sort by Website</option>
                         <option value="username">Sort by Username</option>
                         <option value="email">Sort by Email</option>
                         <option value="password">Sort by Password</option>
                         <option value="notes">Sort by Notes</option>
                     </select>
-                    <button class="btn-outline-light rounded mt-2" type="submit">Sort</button>
+                    <button class="btn btn-outline-light" type="submit">Sort</button>
                 </form>
             </div>
         </div>
+    </div>
 
         <div class="form-control mt-4">
             <div class="row">
               <div class="col">
                 <a href="/add" class="btn btn-primary">Add Password</a>
               </div>
-              <!-- <div class="col">
-                <a href="/edit/{{ password_id }}" class="btn btn-secondary">Edit Password</a>
-              </div> -->
               <div class="col">
-                <a href="/delete" class="btn btn-danger">Delete Password</a>
+                <button id="revealAllPasswords" class="btn btn-secondary">Reveal Passwords</button>
+              </div>
+              <div class="col">
+                <button id="deletePassword" class="btn btn-danger">Delete Selected Passwords</button>
               </div>
             </div>
           </div>
 
+        <form action="/delete" method="post" id="deleteForm">
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
+              <th>Select</th>
               <th></th>
               <th>Website</th>
               <th>Username</th>
@@ -63,6 +59,7 @@
           <tbody>
             {% for row in rows%}
             <tr>
+              <td><input type="checkbox" name="select" value="{{ row.id }}" disabled></td>
               <td>
                 <a href="/edit/{{ row.id }}" class="btn btn-secondary">Edit</a>
               </td>
@@ -75,54 +72,67 @@
                 {% endif %}</td>
               <td>{{ row.username }}</td>
               <td>{{ row.email }}</td>
-              <td>{% if pin_verified %}
-                <!-- Show sensitive fields -->
-                <span class="password-field">{{ row.password }}</span>
-              {% else %}
-                <!-- Show placeholder or message -->
-                <button class="btn btn-link reveal-password" data-password="{{ row.password }}">Enter PIN to reveal</button>
-              {% endif %}</td>
-              <td>{{ row.notes }}</td>
+              <td><span class="password" data-password="{{ row.password }}">*******</span></td>
+              <td><textarea class="form-control" rows="1" maxlength="200">{{ row.notes }}</textarea></td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        </form>
       </div>
-      <script>
-      // Add event listeners to reveal password buttons
-      document.querySelectorAll('.reveal-password').forEach(button => {
-          button.addEventListener('click', () => {
-              const pin = prompt('Enter PIN to reveal password:');
 
-              // Send PIN to server for verification
-              fetch('/verify_pin', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({
-                          pin
-                      })
-                  })
-                  .then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          // PIN verified, display password input field
-                          const passwordContainer = button.parentElement;
-                          passwordContainer.innerHTML = `
-                              <span class="password-field">${button.getAttribute('data-password')}</span>
-                          `;
-                      } else {
-                          // PIN verification failed, display error message
-                          alert(data.message);
-                      }
-                  })
-                  .catch(error => {
-                      console.error('Error:', error);
-                      alert('An error occurred while verifying PIN.');
-                  });
-          });
-      });
-  </script>
+      <script>
+      // Add event listener to reveal all passwords
+      document.getElementById("revealAllPasswords").addEventListener("click", () => {
+    console.log("Button clicked!"); // Add this line to log a message to the console
+    const pin = prompt('Enter PIN to reveal passwords:');
+
+    // Send PIN to server for verification
+    fetch('/verify_pin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                pin
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // PIN verified, reveal all passwords
+                document.querySelectorAll('.password').forEach(passwordElement => {
+                    passwordElement.textContent = passwordElement.dataset.password;
+                });
+            } else {
+                // PIN verification failed, display error message
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while verifying PIN.');
+        });
+        });
+
+        const deletePasswordButton = document.getElementById("deletePassword");
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        let deleteMode = false;
+      
+        deletePasswordButton.addEventListener("click", () => {
+        if (!deleteMode) {
+            deleteMode = true;
+            deletePasswordButton.textContent = "Confirm Delete";
+            checkboxes.forEach(checkbox => {
+                checkbox.disabled = false;
+            });
+        } else {
+            if (confirm("Are you sure you want to delete the selected passwords?")) {
+                document.getElementById("deleteForm").submit();
+            }
+        }
+        });
+
+      </script>
 
 {% endblock %}
