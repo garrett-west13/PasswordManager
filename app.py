@@ -33,6 +33,8 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
  
 def get_db_connection():
+    if "user_id" not in session:
+        session.clear()  # Clear the session if user_id is not present
     conn = sqlite3.connect("passwords.db")
     conn.row_factory = sqlite3.Row
     return conn
@@ -41,47 +43,129 @@ def get_db_connection():
 def index():
     # Check if user is logged in
     if "user_id" in session:
-
         db = get_db_connection()
+
+        # If it's a POST request, it's likely a search query
+        if request.method == "POST":
+            if "search" in request.form:
+                # Handling search functionality
+                search_query = request.form.get("search")
+                results = []
+
+                encrypted_results = db.execute("SELECT * FROM passwords WHERE user_id = ?", (session["user_id"],)).fetchall()
+
+                for encrypted_row in encrypted_results:
+                    decrypted_row = {}
+                    decryption_successful = True
+
+                    for field in ["id", "website", "username", "email", "password", "notes"]:
+                        encrypted_data = encrypted_row[field]
+                        if field == "id":
+                            decrypted_row[field] = encrypted_data
+                        elif encrypted_data is not None:
+                            try:
+                                decrypted_data = cipher.decrypt(encrypted_data).decode()
+                                decrypted_row[field] = decrypted_data
+                            except Exception as e:
+                                decrypted_row[field] = f"Decryption Error: {str(e)}"
+                                decryption_successful = False
+                        else:
+                            decrypted_row[field] = None
+
+                    if decryption_successful:
+                        results.append(decrypted_row)
+
+                # Filter the decrypted results based on the search query
+                filtered_results = [row for row in results if row and (
+                    search_query.lower() in row["website"].lower() if row["website"] else False
+                    or search_query.lower() in row["notes"].lower() if row["notes"] else False
+                )]
+
+                
+                username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
+            
+                db.close()
+
+                # Render the template with the search results
+                return render_template("index.html", username=username, rows=filtered_results)
+
+            elif "sort" in request.form:
+                # Handling sorting functionality
+                sort_field = request.form.get("sort")
+                table = db.execute(f"SELECT * FROM passwords WHERE user_id = ? ORDER BY {sort_field}", (session["user_id"],))
+                rows = []
+
+                for item in table:
+                    decrypted_row = {}
+                    decryption_successful = True
+
+                    for field in ["id", "website", "username", "email", "password", "notes"]:
+                        encrypted_data = item[field]
+                        if field == "id":
+                            decrypted_row[field] = encrypted_data
+                        elif encrypted_data is not None:
+                            try:
+                                decrypted_data = cipher.decrypt(encrypted_data).decode()
+                                decrypted_row[field] = decrypted_data
+                            except Exception as e:
+                                decrypted_row[field] = f"Decryption Error: {str(e)}"
+                                decryption_successful = False
+                        else:
+                            decrypted_row[field] = None
+
+                    if decryption_successful:
+                        rows.append(decrypted_row)
+
+                db.close()
+
+                # Get username from the database
+                db = get_db_connection()
+                username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
+                db.close()
+
+                # Render the index page with the username and sorted rows
+                return render_template("index.html", username=username, rows=rows)
+
+        # If it's a regular GET request, fetch all rows
         table = db.execute("SELECT * FROM passwords WHERE user_id = ?", (session["user_id"],))
         rows = []
 
         for item in table:
             decrypted_row = {}
-            decryption_successful = True  # Flag to track decryption success for the entire row
+            decryption_successful = True
+
             for field in ["id", "website", "username", "email", "password", "notes"]:
                 encrypted_data = item[field]
                 if field == "id":
-                    decrypted_row[field] = encrypted_data 
+                    decrypted_row[field] = encrypted_data
                 elif encrypted_data is not None:
                     try:
                         decrypted_data = cipher.decrypt(encrypted_data).decode()
                         decrypted_row[field] = decrypted_data
                     except Exception as e:
-                        # Handle decryption errors gracefully
                         decrypted_row[field] = f"Decryption Error: {str(e)}"
-                        decryption_successful = False  # Set flag to False if decryption fails for any field
+                        decryption_successful = False
                 else:
                     decrypted_row[field] = None
 
             if decryption_successful:
                 rows.append(decrypted_row)
+
         db.close()
-        print(rows)
 
         # Get username from the database
         db = get_db_connection()
         username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
         db.close()
-        # Render the index page with the username
+
+        # Render the index page with the username and rows
         return render_template("index.html", username=username, rows=rows)
-    
+
     else:
         # Redirect to login page if user is not logged in
         return redirect(url_for("login"))
 
-
-
+# Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -343,8 +427,11 @@ def edit_password(password_id):
                 else:
                     decrypted_row[field] = None
 
+            db = get_db_connection()
+            username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
+            db.close()
             # Pass password_id to the template
-            return render_template("edit.html", password=decrypted_row, password_id=password_id)
+            return render_template("edit.html", password=decrypted_row, password_id=password_id, username=username)
         else:
             flash("Password not found or unauthorized", "error")
             return redirect(url_for("index"))

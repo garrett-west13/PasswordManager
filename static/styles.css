@@ -3,3 +3,11 @@ nav .navbar-brand
 {
     font-size: xx-large;
 }
+
+.notes-summary {
+    width: calc(100% - 20px); /* Adjust width */
+    background-color: transparent; /* Set background color to transparent */
+    font-size: 14px; /* Adjust font size */
+    color: #333; /* Text color */
+    font-family: Arial, sans-serif; /* Font family */
+}

@@ -12,10 +12,6 @@
         <div class="row justify-content-center border bg-light">
             <div class="col-auto">
                 <div class="col">
-                    <form action="/generate" method="post">
-                        <input name="generate" type="button" class="btn-secondary mt-2" value="Generate Password">
-                    </form>
-                    <p class="mt-2 border">placeholder password</p>
                 <div class="mb-3">
                     <label for="website" class="form-label">Website</label>
                     <!-- Add onchange event listener to trigger conversion -->
@@ -32,6 +28,7 @@
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
+                    <button type="button" class="btn btn-secondary mt-2" onclick="generatePassword()">Generate Password</button>
                 </div>
                 <div class="mb-3">
                     <label for="notes" class="form-label">Notes</label>
@@ -47,18 +44,30 @@
 
 <script>
     function convertToURL() {
-        var domain = document.getElementById("website").value.trim();
-        if (domain !== "") {
-            // Check if the domain contains ".com"
-            if (!domain.includes(".com", ".org", ".net", ".edu", ".gov", ".io", ".co", ".xyz", ".info")) {
-                domain += ".com";
-            }
-            // Check if the domain starts with "http://" or "https://"
-            if (!domain.startsWith("http://") && !domain.startsWith("https://")) {
-                domain = "https://" + domain;
-            }
-            document.getElementById("website").value = domain;
+    var domain = document.getElementById("website").value.trim();
+    if (domain !== "") {
+        // Check if the domain contains a top-level domain
+        if (!/\.[a-zA-Z]{2,}$/.test(domain)) {
+            domain += ".com";
         }
+        // Check if the domain starts with "http://" or "https://"
+        if (!domain.startsWith("http://") && !domain.startsWith("https://")) {
+            domain = "https://" + domain;
+        }
+        document.getElementById("website").value = domain;
     }
+}
+
+    function generatePassword() {
+        // Generate password logic
+        var generatedPassword = generateRandomPassword(); // Replace with your password generation logic
+        document.getElementById("password").value = generatedPassword;
+    }
+
+    function generateRandomPassword() {
+        // Your password generation logic goes here
+        // Return the generated password
+    }
+
 </script>
 {% endblock %}
