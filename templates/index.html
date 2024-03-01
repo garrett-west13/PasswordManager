@@ -22,6 +22,11 @@
                         <option value="username">Username</option>
                         <option value="email">Email</option>
                         <option value="notes">Notes</option>
+                        <option value="created_at">Time Created</option>
+                    </select>
+                    <select name="order" class="form-select me-2" aria-label="Default select example">
+                        <option value="asc" selected>Ascending</option>
+                        <option value="desc">Descending</option>
                     </select>
                     <button class="btn btn-secondary" type="submit">Sort</button>
                 </form>
@@ -132,6 +137,7 @@
                 }
             }
         });
+
     </script>
 
 {% endblock %}

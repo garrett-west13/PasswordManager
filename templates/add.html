@@ -60,13 +60,18 @@
 
     function generatePassword() {
         // Generate password logic
-        var generatedPassword = generateRandomPassword(); // Replace with your password generation logic
+        const generatedPassword = generateRandomPassword(); // Replace with your password generation logic
         document.getElementById("password").value = generatedPassword;
     }
 
     function generateRandomPassword() {
-        // Your password generation logic goes here
-        // Return the generated password
+        // Generate a random password
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
+        let password = "";
+        for (let i = 0; i < 20; i++) {
+            password += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return password;
     }
 
 </script>
