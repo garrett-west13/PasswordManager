@@ -14,21 +14,20 @@
                 <div class="col">
                 <div class="mb-3">
                     <label for="website" class="form-label">Website</label>
-                    <!-- Add onchange event listener to trigger conversion -->
-                    <input type="text" class="form-control" id="website" name="website" required onchange="convertToURL()">
+                    <input type="text" class="form-control" id="website" name="website" required>
                 </div>
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" name="username">
+                    <input autocomplete="username" type="text" class="form-control" id="username" name="username">
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <input autocomplete="email" type="email" class="form-control" id="email" name="email">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                    <button type="button" class="btn btn-secondary mt-2" onclick="generatePassword()">Generate Password</button>
+                    <input id="password" type="password" class="form-control password" name="password" required>
+                    <button type="button" class="btn btn-secondary mt-2 generatePassword">Generate Password</button>
                 </div>
                 <div class="mb-3">
                     <label for="notes" class="form-label">Notes</label>
@@ -42,37 +41,4 @@
     </form>
 </div>
 
-<script>
-    function convertToURL() {
-    var domain = document.getElementById("website").value.trim();
-    if (domain !== "") {
-        // Check if the domain contains a top-level domain
-        if (!/\.[a-zA-Z]{2,}$/.test(domain)) {
-            domain += ".com";
-        }
-        // Check if the domain starts with "http://" or "https://"
-        if (!domain.startsWith("http://") && !domain.startsWith("https://")) {
-            domain = "https://" + domain;
-        }
-        document.getElementById("website").value = domain;
-    }
-}
-
-    function generatePassword() {
-        // Generate password logic
-        const generatedPassword = generateRandomPassword(); // Replace with your password generation logic
-        document.getElementById("password").value = generatedPassword;
-    }
-
-    function generateRandomPassword() {
-        // Generate a random password
-        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
-        let password = "";
-        for (let i = 0; i < 20; i++) {
-            password += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return password;
-    }
-
-</script>
 {% endblock %}

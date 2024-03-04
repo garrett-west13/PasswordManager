@@ -1,5 +1,6 @@
 import re
 import os
+import datetime
 
 from flask import Flask, flash, redirect, render_template, request, session, jsonify, url_for
 from flask_session import Session
@@ -86,7 +87,6 @@ def index():
 
                     if decryption_successful:
                         results.append(decrypted_row)
-                print(f"Decrypted results: {results}")
                 # Filter the decrypted results based on the search query
                 filtered_results = [row for row in results if row and (
                     search_query.lower() in row["website"].lower() if row["website"] else False
@@ -97,8 +97,6 @@ def index():
                 username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
             
                 db.close()
-                
-                print(f"Filtered results: {filtered_results}")
 
                 # Render the template with the search results
                 return render_template("index.html", username=username, rows=filtered_results)
@@ -111,7 +109,6 @@ def index():
                 query = f"SELECT * FROM passwords WHERE user_id = ? ORDER BY {sort_field} {order_field}"
                 table = db.execute(query, (session["user_id"],)).fetchall()
                 rows = []
-                print(f"Sorted table: {table}")
                 for item in table:
                     decrypted_row = {}
                     decryption_successful = True
@@ -132,14 +129,10 @@ def index():
 
                     if decryption_successful:
                         rows.append(decrypted_row)
-                
-                print(f"Sorted rows: {rows}")
 
                 # Get username from the database
                 username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
                 db.close()
-                
-                print(f"Username: {username}")
 
                 # Render the index page with the username and sorted rows
                 return render_template("index.html", username=username, rows=rows)
@@ -153,23 +146,19 @@ def index():
             # Fetch all rows from the cursor
             table_rows = table.fetchall()
 
-            print(f"Number of rows returned by the query: {len(table_rows)}")
-
             for item in table_rows:
                 decrypted_row = {}
                 decryption_successful = True
 
-                for field in ["id", "website", "username", "email", "password", "notes"]:
+                for field in ["id", "website", "username", "email", "password", "notes", "created_at"]:
                     encrypted_data = item[field]
-                    print(f"Field: {field}, Encrypted Data: {encrypted_data}")
-                    if field == "id" or field == "user_id":
+                    if field == "id" or field == "user_id" or field == "created_at":   
                         decrypted_row[field] = encrypted_data
                     elif encrypted_data is not None:
                         try:
                             decrypted_data = cipher.decrypt(encrypted_data).decode()
                             decrypted_row[field] = decrypted_data
                         except Exception as e:
-                            print(f"Decryption error for field {field}: {str(e)}")
                             decrypted_row[field] = f"Decryption Error: {str(e)}"
                             decryption_successful = False
                     else:
@@ -179,14 +168,11 @@ def index():
                     rows.append(decrypted_row)
         finally:
             db.close()
-        print(f"All rows: {rows}")
-
+        print(rows)
         # Get username from the database
         db = get_db_connection()
         username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
         db.close()
-        
-        print(f"Username: {username}")
 
         # Render the index page with the username and rows
         return render_template("index.html", username=username, rows=rows)
@@ -318,8 +304,6 @@ def add():
             password = request.form.get("password")
             notes = request.form.get("notes")
 
-            print(website, username, email, password, notes)
-
             # Ensure website and password are provided
             if not website:
                 flash("Must enter a URL", "error")
@@ -335,8 +319,6 @@ def add():
             encoded_password = password.encode()
             encoded_notes = notes.encode() if notes else None
 
-            print(encoded_website, encoded_username, encoded_email, encoded_password, encoded_notes)
-
             try:
                 encrypted_website = cipher.encrypt(encoded_website)
                 encrypted_username = cipher.encrypt(encoded_username) if encoded_username else None
@@ -350,8 +332,8 @@ def add():
             # Insert encrypted data into the database
             try:
                 db = get_db_connection()
-                db.execute("INSERT INTO passwords (user_id, website, username, password, notes, email) VALUES (?, ?, ?, ?, ?, ?)",
-                        (session["user_id"], encrypted_website, encrypted_username, encrypted_password, encrypted_notes, encrypted_email))
+                db.execute("INSERT INTO passwords (user_id, website, username, password, notes, email, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                        (session["user_id"], encrypted_website, encrypted_username, encrypted_password, encrypted_notes, encrypted_email, datetime.datetime.now()))
                 db.commit()
             except Exception as e:
                 flash(f"Error inserting data into database: {e}", "error")
@@ -429,8 +411,8 @@ def edit_password(password_id):
 
         # Update database entry
         db = get_db_connection()
-        db.execute("UPDATE passwords SET website = ?, username = ?, email = ?, password = ?, notes = ? WHERE id = ? AND user_id = ?",
-                   (encrypted_website, encrypted_username, encrypted_email, encrypted_password, encrypted_notes, password_id, session["user_id"]))
+        db.execute("UPDATE passwords SET website = ?, username = ?, email = ?, password = ?, notes = ?, created_at = ? WHERE id = ? AND user_id = ?",
+                   (encrypted_website, encrypted_username, encrypted_email, encrypted_password, encrypted_notes, datetime.datetime.now(), password_id, session["user_id"]))
         db.commit()
         db.close()
 
@@ -473,7 +455,8 @@ def delete_passwords():
         selected_ids = request.form.getlist("select")
 
         if not selected_ids:
-            return "No rows selected for deletion"
+            flash("No rows selected for deletion")
+            return redirect(url_for('index'))
 
         # Convert IDs to integers
         selected_ids = [int(id) for id in selected_ids]
@@ -492,3 +475,105 @@ def delete_passwords():
     flash("Method not allowed", 405)
     return redirect(url_for('index')
 )
+
+def update_account_details(user_id, username, password, pin):
+    """Update the account details in the database.
+
+    Args:
+        user_id (int): The user's ID.
+        username (str): The user's new username.
+        password (str): The user's new password.
+        pin (str): The user's new pin.
+
+    Returns:
+        bool: True if the account was updated successfully, False otherwise.
+    """
+    try:
+        db = get_db_connection()
+        db.execute("UPDATE users SET username = ?, password = ?, pin_hash = ? WHERE id = ?",
+                   (username, generate_password_hash(password), generate_password_hash(pin), user_id))
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        flash(f"An error occurred while updating account details: {e}", "error")
+        return False
+    finally:
+        db.close()
+    return True
+ 
+@app.route("/account", methods=["GET", "POST"])
+def account():
+    """
+    Handle the editing of user account details.
+
+    This function validates the input data and updates the account details in the database if the input is valid.
+
+    :return: If the update of account details is successful, return a success flash message and redirect the user to the index page.
+             If the update fails, return an error flash message and redirect the user to the account page.
+    """
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm = request.form.get("confirmation")
+        pin = request.form.get("pin")
+
+        # Validate username
+        if not username:
+            flash("Username is required", "error")
+            return redirect(url_for("account"))
+
+        db = get_db_connection()
+        existing_users = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchall()
+        db.close()
+        if len(existing_users) > 0:
+            flash("Username is already taken", "error")
+            return redirect(url_for("account"))
+
+        # Validate password
+        if not password:
+            flash("Password is required", "error")
+            return redirect(url_for("account"))
+        if not confirm:
+            flash("Password confirmation is required", "error")
+            return redirect(url_for("account"))
+        if len(password) < 8 or (not bool(re.search(r'[^\w\s]', password)) or not bool(re.search(r'\d', password))):
+            flash("Password must be at least 8 characters long and include at least one number and one symbol", "error")
+            return redirect(url_for("account"))
+        if password != confirm:
+            flash("Passwords do not match", "error")
+            return redirect(url_for("account"))
+
+        # Validate PIN
+        if not pin:
+            flash("PIN is required", "error")
+            return redirect(url_for("account"))
+        if len(pin) != 4 or not pin.isdigit():
+            flash("Must enter a 4-digit PIN", "error")
+            return redirect(url_for("account"))
+
+        if update_account_details(session["user_id"], username, password, pin):
+            flash("Account details updated successfully", "success")
+            return redirect(url_for("index"))
+        else:
+            flash("Failed to update account details", "error")
+            return redirect(url_for("account"))
+    else:
+        db = get_db_connection()
+        username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
+        db.close()
+
+        return render_template("account.html", username=username)
+    
+@app.route("/account/delete", methods=["POST"])
+def delete_account():
+    if request.method == "POST":
+        db = get_db_connection()
+        db.execute("DELETE FROM passwords WHERE user_id = ?", (session["user_id"],))
+        db.execute("DELETE FROM users WHERE id = ?", (session["user_id"],))
+        db.commit()
+        db.close()
+        session.clear()
+        flash("Account deleted successfully", "success")
+        return redirect(url_for("login"))
+    flash("Method not allowed", 405)
+    return redirect(url_for("index"))

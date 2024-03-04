@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Account Settings
+{% endblock %}
+
+{% block main %}
+    <h2>Account Settings</h2>
+    <form action="/account" method="post" id="editForm">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="New Username" type="text" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto password" name="password" placeholder="New Password" type="password" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto password_confirm" name="confirmation" placeholder="Confirm New Password" type="password" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="pin" placeholder="New Pin" type="password" maxlength="4" minlength="4">
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" type="submit">Edit</button>
+        </div>
+        <button type="button" class="togglePassword btn btn-secondary">Show/Hide Password</button>
+    </form>
+    <footer class="mt-5">
+        <form action="/account/delete" method="post" id="deleteForm">
+            <button class="btn btn-danger" type="submit">Delete Account</button>
+        </form>
+    </footer>
+
+{% endblock %}

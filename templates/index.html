@@ -57,6 +57,7 @@
                     <th>Email</th>
                     <th>Password</th>
                     <th>Notes</th>
+                    <th>Time Created</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,78 +67,25 @@
                     <td><a href="/edit/{{ row.id }}" class="btn btn-secondary">Edit</a></td>
                     <td>
                         {% if row.website %}
-                            <a href="{{ row.website }}" target="_blank">{{ row.website }}</a>
+                        <a id="index_website" href="{{ domain }}" class="convertToURL" target="_blank">{{ row.website }}</a>
                         {% else %}
-                            N/A
+                        N/A
                         {% endif %}
                     </td>
                     <td>{{ row.username }}</td>
                     <td>{{ row.email }}</td>
                     <td>
-                        <span class="password" data-password="{{ row.password }}">*******</span>
+                        <span class="password_index" data-password="{{ row.password }}">*******</span>
                     </td>
                     <td>
                         <textarea class="form-control notes-summary" rows="1" disabled>{{ row.notes }}</textarea>
                     </td>
+                    <td>{{ row.created_at }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </form>
 </div>
-
-    <script>
-        // Add event listener to reveal all passwords
-        document.getElementById("revealAllPasswords").addEventListener("click", () => {
-            console.log("Button clicked!"); // Add this line to log a message to the console
-            const pin = prompt('Enter PIN to reveal passwords:');
-
-            // Send PIN to server for verification
-            fetch('/verify_pin', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    pin
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // PIN verified, reveal all passwords
-                    document.querySelectorAll('.password').forEach(passwordElement => {
-                        passwordElement.textContent = passwordElement.dataset.password;
-                    });
-                } else {
-                    // PIN verification failed, display error message
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while verifying PIN.');
-            });
-        });
-
-        const deletePasswordButton = document.getElementById("deletePassword");
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        let deleteMode = false;
-      
-        deletePasswordButton.addEventListener("click", () => {
-            if (!deleteMode) {
-                deleteMode = true;
-                deletePasswordButton.textContent = "Confirm Delete";
-                checkboxes.forEach(checkbox => {
-                    checkbox.disabled = false;
-                });
-            } else {
-                if (confirm("Are you sure you want to delete the selected passwords?")) {
-                    document.getElementById("deleteForm").submit();
-                }
-            }
-        });
-
-    </script>
 
 {% endblock %}
