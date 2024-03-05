@@ -75,6 +75,7 @@ if (deletePasswordButton) {
   });
 }
 
+// Convert to URL for redirecting
 function convertToURL(clickedLink) {
     let domain = clickedLink.textContent.trim().toLowerCase().replace(/\s/g, "");
     // Check and adjust domain
@@ -121,12 +122,10 @@ function autofillLoginForm() {
 }
 
 function generatePassword() {
-  // Generate password logic
-  const generatedPassword = generateRandomPassword(); // Replace with your password generation logic
+  const generatedPassword = generateRandomPassword(); 
   document.querySelector(".password").value = generatedPassword;
 }
 function generateRandomPassword() {
-  // Generate a random password
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
   let password = "";

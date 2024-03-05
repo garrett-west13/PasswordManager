@@ -13,16 +13,15 @@ Encryption: Passwords and sensitive data are encrypted using strong cryptographi
 Search and Sorting: Users can search for password entries and sort them based on different criteria.
 Accessibility: The application follows accessibility best practices to ensure it's accessible to users with disabilities.
 Compatibility: The application is tested on different devices and web browsers to ensure compatibility and responsiveness.
-Data Backup and Recovery: Regular backups are performed to prevent data loss, and users can export their password data for backup purposes.
-Audit Trail and Logging: Important events and actions are logged to track user activity and diagnose issues.
 Privacy and Compliance: Privacy controls are implemented to protect user data and comply with relevant privacy regulations.
-Cross-Platform Support: The application can be accessed from different platforms, including web browsers and mobile devices.
+TODO: Data Backup and Recovery: Regular backups are performed to prevent data loss, and users can export their password data for backup purposes.
+TODO: Audit Trail and Logging: Important events and actions are logged to track user activity and diagnose issues.
 
 ## Installation:
-Clone the repository: git clone https://github.com/your_username/PasswordManager.git
+Clone the repository: git clone https://github.com/garrett_west13/PasswordManager.git
 Install dependencies: pip install -r requirements.txt
-Set up the database: python manage.py migrate
-Start the server: python manage.py runserver
+Set up the database: python app.py migrate
+Start the server: python app.py runserver
 Access the application in your web browser at http://localhost:5000
 
 ## Usage:

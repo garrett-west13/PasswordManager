@@ -15,11 +15,11 @@ nav .navbar-brand
 }
 
 .notes-summary {
-    width: calc(100% - 20px); /* Adjust width */
-    background-color: transparent; /* Set background color to transparent */
-    font-size: 14px; /* Adjust font size */
-    color: #333; /* Text color */
-    font-family: Arial, sans-serif; /* Font family */
+    width: calc(100% - 20px); 
+    background-color: transparent; 
+    font-size: 14px; 
+    color: #333; 
+    font-family: Arial, sans-serif; 
 }
 
 /* Add styles for the arrow buttons */
@@ -29,56 +29,52 @@ nav .navbar-brand
     border: none;
     cursor: pointer;
     font-size: 20px;
-    color: #007bff; /* Set the color for the arrow icons */
-    margin: 0 5px; /* Add margin between the buttons */
-    transition: color 0.3s; /* Add a color transition effect */
+    color: #007bff; 
+    margin: 0 5px; 
+    transition: color 0.3s; 
 }
 
 #ascButton:hover,
 #descButton:hover {
-    color: #0056b3; /* Change the color on hover */
+    color: #0056b3; 
 }
 
-/* #################### Add custom styles for the page */
 
-/* Styles for the search and submit form */
+
 form {
-    margin-bottom: 20px; /* Add margin at the bottom of the form */
+    margin-bottom: 20px; 
 }
 
-/* Styles for the sort form */
+
 #sortForm {
-    margin-bottom: 20px; /* Add margin at the bottom of the form */
+    margin-bottom: 20px; 
 }
 
-/* Styles for the buttons in the row */
+
 .row .col {
-    margin-bottom: 10px; /* Add margin between the buttons */
+    margin-bottom: 10px; 
 }
 
-/* Styles for the delete form */
+
 #deleteForm {
-    margin-top: 20px; /* Add margin at the top of the form */
+    margin-top: 20px; 
 }
 
-/* Styles for the table */
+
 table {
-    margin-top: 20px; /* Add margin at the top of the table */
+    margin-top: 20px; 
 }
 
-/* Styles for the Navbar */
 .navbar {
-    margin-bottom: 20px; /* Add margin at the bottom of the navbar */
+    margin-bottom: 20px; 
 }
 
-/* Styles for the Flash Messages */
 .header {
-    margin-bottom: 20px; /* Add margin at the bottom of the header */
+    margin-bottom: 20px;
 }
 
-/* Styles for the Main Content */
 main {
-    margin-bottom: 20px; /* Add margin at the bottom of the main content */
+    margin-bottom: 20px; 
 }
 
 h2 {

@@ -1,5 +1,4 @@
 import re
-import os
 import datetime
 
 from flask import Flask, flash, redirect, render_template, request, session, jsonify, url_for
@@ -45,13 +44,15 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
  
+ # Create database connection
 def get_db_connection():
     if "user_id" not in session:
-        session.clear()  # Clear the session if user_id is not present
+        session.clear() 
     conn = sqlite3.connect("passwords.db")
     conn.row_factory = sqlite3.Row
     return conn
 
+# Index page
 @app.route("/", methods=["GET", "POST"])
 def index():
     # Check if user is logged in
@@ -101,8 +102,8 @@ def index():
                 # Render the template with the search results
                 return render_template("index.html", username=username, rows=filtered_results)
 
+            # Handling sorting functionality
             elif "sort" in request.form:
-                # Handling sorting functionality
                 sort_field = request.form.get("sort")
                 order_field = request.form.get("order")
                 db = get_db_connection()
@@ -168,7 +169,6 @@ def index():
                     rows.append(decrypted_row)
         finally:
             db.close()
-        print(rows)
         # Get username from the database
         db = get_db_connection()
         username = db.execute("SELECT username FROM users WHERE id = ?", (session["user_id"],)).fetchone()["username"]
@@ -291,7 +291,7 @@ def register():
     else:
         return render_template("register.html")
     
-    # Add Passwords and other info
+    # Add Passwords
 @app.route("/add", methods=["GET", "POST"])
 def add():
 
@@ -379,15 +379,14 @@ def verify_pin():
         # PIN verification failed
         return jsonify({"success": False, "message": "Incorrect PIN."}), 401
 
-
+# Edit Password
 @app.route("/edit/<int:password_id>", methods=["GET", "POST"])
 def edit_password(password_id):
     if "user_id" not in session:
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        # Handle form submission to update password
-        # Extract form data
+
         website = request.form.get("website")
         username = request.form.get("username")
         email = request.form.get("email")
@@ -434,7 +433,7 @@ def edit_password(password_id):
                         decrypted_data = cipher.decrypt(encrypted_data).decode()
                         decrypted_row[field] = decrypted_data
                     except Exception as e:
-                        # Handle decryption errors gracefully
+                        # Handle decryption errors
                         decrypted_row[field] = f"Decryption Error: {str(e)}"
                 else:
                     decrypted_row[field] = None
@@ -503,14 +502,7 @@ def update_account_details(user_id, username, password, pin):
  
 @app.route("/account", methods=["GET", "POST"])
 def account():
-    """
-    Handle the editing of user account details.
-
-    This function validates the input data and updates the account details in the database if the input is valid.
-
-    :return: If the update of account details is successful, return a success flash message and redirect the user to the index page.
-             If the update fails, return an error flash message and redirect the user to the account page.
-    """
+ 
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
