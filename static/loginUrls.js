@@ -2,7 +2,7 @@ const knownLoginPageURLs = {
     "google.com": "https://accounts.google.com/",
     "facebook.com": "https://www.facebook.com/login/",
     "youtube.com": "https://www.youtube.com/",
-    "amazon.com": "https://www.amazon.com/ap/signin",
+    "amazon.com": "https://amc.amazon.com/",
     "twitter.com": "https://twitter.com/login",
     "instagram.com": "https://www.instagram.com/accounts/login/",
     "linkedin.com": "https://www.linkedin.com/login",
@@ -103,7 +103,7 @@ const knownLoginPageURLs = {
     "aliexpress.com": "https://login.aliexpress.com/",
     "booking.com": "https://www.booking.com/",
     "cnn.com": "https://edition.cnn.com/profile/login",
-    "costco.com": "https://www.costco.com/",
+    "costco.com": "https://www.costco.com/LogonForm",
     "coursera.org": "https://www.coursera.org/?authMode=login",
     "dell.com": "https://www.dell.com/",
     "dominos.com": "https://www.dominos.com/en/pages/customer/login.jsp",
@@ -162,6 +162,8 @@ const knownLoginPageURLs = {
     "snapchat.com": "https://accounts.snapchat.com/",
     "spotify.com": "https://accounts.spotify.com/en/login",
     "steamcommunity.com": "https://steamcommunity.com/login/home/",
+    "steampowered.com": "https://store.steampowered.com/login",
+    "steam.com": "https://steamcommunity.com/login/home/",
     "target.com": "https://www.target.com/",
     "telegram.org": "https://web.telegram.org/#/login",
     "tripadvisor.com": "https://www.tripadvisor.com/Login",
@@ -177,7 +179,9 @@ const knownLoginPageURLs = {
     "wikipedia.org": "https://en.wikipedia.org/wiki/Special:UserLogin",
     "wordpress.com": "https://wordpress.com/log-in",
     "yahoo.com": "https://login.yahoo.com/",
-    "Best Buy": "https://www.bestbuy.com/identity/global/signin"   
+    "bestbuy.com": "https://www.bestbuy.com/identity/global/signin",
+    "poshmark.com": "https://www.poshmark.com/login",
+    "discover.com": "https://www.discover.com/#",
 };
 
 

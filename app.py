@@ -113,9 +113,9 @@ def index():
                     decrypted_row = {}
                     decryption_successful = True
 
-                    for field in ["id", "website", "username", "email", "password", "notes"]:
+                    for field in ["id", "website", "username", "email", "password", "notes", "created_at"]:
                         encrypted_data = item[field]
-                        if field == "id":
+                        if field == "id" or field == "created_at":
                             decrypted_row[field] = encrypted_data
                         elif encrypted_data is not None:
                             try:

@@ -1,7 +1,17 @@
-/* Size for brand */
+* {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.hidden {
+    display: none;
+  }
+
 nav .navbar-brand
 {
     font-size: xx-large;
+    font-family: Arial, sans-serif;
+    color: #333;
 }
 
 .notes-summary {
@@ -11,3 +21,68 @@ nav .navbar-brand
     color: #333; /* Text color */
     font-family: Arial, sans-serif; /* Font family */
 }
+
+/* Add styles for the arrow buttons */
+#ascButton,
+#descButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #007bff; /* Set the color for the arrow icons */
+    margin: 0 5px; /* Add margin between the buttons */
+    transition: color 0.3s; /* Add a color transition effect */
+}
+
+#ascButton:hover,
+#descButton:hover {
+    color: #0056b3; /* Change the color on hover */
+}
+
+/* #################### Add custom styles for the page */
+
+/* Styles for the search and submit form */
+form {
+    margin-bottom: 20px; /* Add margin at the bottom of the form */
+}
+
+/* Styles for the sort form */
+#sortForm {
+    margin-bottom: 20px; /* Add margin at the bottom of the form */
+}
+
+/* Styles for the buttons in the row */
+.row .col {
+    margin-bottom: 10px; /* Add margin between the buttons */
+}
+
+/* Styles for the delete form */
+#deleteForm {
+    margin-top: 20px; /* Add margin at the top of the form */
+}
+
+/* Styles for the table */
+table {
+    margin-top: 20px; /* Add margin at the top of the table */
+}
+
+/* Styles for the Navbar */
+.navbar {
+    margin-bottom: 20px; /* Add margin at the bottom of the navbar */
+}
+
+/* Styles for the Flash Messages */
+.header {
+    margin-bottom: 20px; /* Add margin at the bottom of the header */
+}
+
+/* Styles for the Main Content */
+main {
+    margin-bottom: 20px; /* Add margin at the bottom of the main content */
+}
+
+h2 {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+

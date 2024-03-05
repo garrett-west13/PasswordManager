@@ -25,12 +25,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" value="{{ password.password }}">
+                        <input type="password" class="form-control password" id="password" name="password" value="{{ password.password }}">
                     </div>
                     <div class="mb-3">
                         <label for="notes" class="form-label">Notes</label>
                         <textarea class="form-control" id="notes" name="notes">{{ password.notes }}</textarea>
                     </div>
+                    <button type="button" class="togglePassword btn btn-secondary">Show/Hide Password</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>

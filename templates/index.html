@@ -5,9 +5,8 @@
 {% endblock %}
 
 {% block main %}
-    
-<div class="container">
-    <h2 class="mt-4">Manage Passwords</h2>
+<h2 class="mb-5">Manage Passwords</h2>    
+<div class="container mb-5">
     <div class="row justify-content-center mt-4">
         <div class="col-md-8">
             <div class="d-flex justify-content-between">
@@ -15,7 +14,7 @@
                     <input name="search" type="search" class="form-control me-2" placeholder="Search">
                     <button class="btn btn-secondary" type="submit">Submit</button>
                 </form>
-                <form action="/" method="post" class="d-flex align-items-center">
+                <form action="/" method="post" class="d-flex align-items-center" id="sortForm">
                     <select name="sort" class="form-select me-2" aria-label="Default select example">
                         <option value="" disabled selected>Sort by...</option>
                         <option value="website">Website</option>
@@ -24,11 +23,13 @@
                         <option value="notes">Notes</option>
                         <option value="created_at">Time Created</option>
                     </select>
-                    <select name="order" class="form-select me-2" aria-label="Default select example">
-                        <option value="asc" selected>Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                    <button class="btn btn-secondary" type="submit">Sort</button>
+                    <input type="hidden" name="order" id="orderField" value="asc">
+                    <button type="button" id="ascButton" onclick="submitForm('asc')">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button type="button" id="descButton" onclick="submitForm('desc')">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
                 </form>
             </div>
         </div>
@@ -40,9 +41,14 @@
         </div>
         <div class="col">
             <button id="revealAllPasswords" class="btn btn-secondary">Reveal Passwords</button>
+            <form id="pinForm" class="hidden mt-2">
+                <input class="form-control me-2" minlength="4" maxlength="4" type="password" id="pinInput" placeholder="Enter PIN">
+                <button class="btn btn-secondary" id="submitPin">Submit</button>
+              </form>
         </div>
         <div class="col">
             <button id="deletePassword" class="btn btn-danger">Delete Selected Passwords</button>
+            
         </div>
     </div>
 
@@ -72,20 +78,37 @@
                         N/A
                         {% endif %}
                     </td>
-                    <td>{{ row.username }}</td>
-                    <td>{{ row.email }}</td>
+                    <td>{{ row.username if row.username is not none else "" }}</td>
+                    <td>{{ row.email if row.email is not none else "" }}</td>
                     <td>
-                        <span class="password_index" data-password="{{ row.password }}">*******</span>
+                        <span type="password" class="password_index" data-password="{{ row.password }}">*******</span>
                     </td>
                     <td>
-                        <textarea class="form-control notes-summary" rows="1" disabled>{{ row.notes }}</textarea>
+                        <textarea class="form-control notes-summary" rows="1" disabled>{{ row.notes if row.notes is not none else "" }}</textarea>
                     </td>
-                    <td>{{ row.created_at }}</td>
+                    <td>
+                        {% if row.created_at %}
+                            {% set parts = row.created_at.split(' ') %}
+                            {% set date_part = parts[0] %}
+                            {% set time_part = parts[1].split('.')[0] %}  {# Remove milliseconds #}
+                            {% set hour_part = time_part.split(':')[0] %}
+                            {{ date_part }} {{ hour_part }}:{{ parts[1].split(':')[1] }}
+                        {% else %}
+                            N/A
+                         {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </form>
 </div>
+
+<script>
+    function submitForm(order) {
+        document.getElementById('orderField').value = order;
+        document.getElementById('sortForm').submit();
+    }
+</script>
 
 {% endblock %}
