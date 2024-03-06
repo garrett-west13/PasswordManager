@@ -1,37 +1,29 @@
-# Password Manager
+# Flask Password Manager App
+#### Video Demo: [URL HERE]
+#### Description:
+Flask Password Manager App is a web application built using Flask, HTML, CSS, and JavaScript. It provides users with a secure platform to generate and manage passwords, convert URLs, toggle password visibility, and delete passwords.
 
-#### Video Demo:  <URL HERE>
+### Files Overview:
+- `app.py`: Contains the Flask application logic, including route definitions, password generation, URL conversion, and password deletion.
+- `templates/`: Directory containing HTML templates for different pages of the application.
+- `static/`: Directory containing static files such as CSS stylesheets and client-side JavaScript files.
+- `loginUrls.js`: JavaScript file containing a dictionary of known login page URLs for various domains.
 
-## Overview:
-This is a password manager application designed to help users securely store and manage their passwords for various online accounts. The application provides features for user authentication, password management, security, and data privacy.
+### Design Choices:
+- **Flask**: Chosen for its simplicity and flexibility in building web applications.
+- **HTML/CSS/JavaScript**: Used for frontend development to create a responsive and interactive user interface.
+- **Password Generation**: Implemented a function to generate random passwords with customizable length and complexity.
+- **URL Conversion**: Provided functionality to convert plain text URLs to clickable links with appropriate formatting.
+- **Toggle Password Visibility**: Enabled users to toggle password visibility for enhanced usability.
+- **Deletion Functionality**: Implemented a feature to delete passwords securely with a confirmation prompt.
+- **Deployment**: Considered deployment options such as Heroku or AWS Elastic Beanstalk for scalability and reliability.
 
-## Features:
-User Authentication: Users can register an account and securely log in using their credentials.
-Password Management: Users can add, view, edit, and delete password entries for different websites and applications.
-Password Generator: Users can generate strong, random passwords for new accounts.
-Encryption: Passwords and sensitive data are encrypted using strong cryptographic algorithms to ensure security.
-Search and Sorting: Users can search for password entries and sort them based on different criteria.
-Accessibility: The application follows accessibility best practices to ensure it's accessible to users with disabilities.
-Compatibility: The application is tested on different devices and web browsers to ensure compatibility and responsiveness.
-Privacy and Compliance: Privacy controls are implemented to protect user data and comply with relevant privacy regulations.
-TODO: Data Backup and Recovery: Regular backups are performed to prevent data loss, and users can export their password data for backup purposes.
-TODO: Audit Trail and Logging: Important events and actions are logged to track user activity and diagnose issues.
+### Future Enhancements:
+- Add password strength meter.
+- Integrate with password management APIs or browser extensions for autofill functionality.
+- Enhance the UI/UX with modern design principles and animations.
 
-## Installation:
-Clone the repository: git clone https://github.com/garrett_west13/PasswordManager.git
-Install dependencies: pip install -r requirements.txt
-Set up the database: python app.py migrate
-Start the server: python app.py runserver
-Access the application in your web browser at http://localhost:5000
+### Conclusion:
+Flask Password Manager App aims to provide users with a simple yet powerful tool for managing passwords securely. By leveraging Flask and web technologies, the application offers essential features while allowing room for future expansion and improvement.
 
-## Usage:
-Register an account or log in if you already have an account.
-Add new passwords for your accounts using the "Add Password" feature.
-View, edit, or delete existing password entries as needed.
-Use the password generator to generate strong passwords for new accounts.
-Ensure to log out after each session for security purposes.
- 
-### Acknowledgements
-CS50 Web Programming with Python and JavaScript
-Flask Documentation
-SQLite Documentation
+
