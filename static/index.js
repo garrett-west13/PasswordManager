@@ -20,40 +20,52 @@ if (togglePasswordButton) {
 }
 
  // Add event listener to reveal all passwords
- const revealAllPasswordsButton = document.getElementById("revealAllPasswords");
- if (revealAllPasswordsButton) {
-   revealAllPasswordsButton.addEventListener("click", () => {
-     console.log("Button clicked!");
-     const pin = prompt('Enter PIN to reveal passwords:');
+ document.addEventListener('DOMContentLoaded', () => {
+  const revealAllPasswordsButton = document.getElementById("revealAllPasswords");
+  let passwordsRevealed = false;
 
-    // Send PIN to server for verification
-    fetch('/verify_pin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            pin
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // PIN verified, reveal all passwords
-            document.querySelectorAll('.password_index').forEach(passwordElement => {
-                passwordElement.textContent = passwordElement.dataset.password;
-            });
-        } else {
-            // PIN verification failed, display error message
-            alert(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while verifying PIN.');
-    });
- });
- };
+  if (revealAllPasswordsButton) {
+      revealAllPasswordsButton.addEventListener("click", () => {
+          if (!passwordsRevealed) {
+              const pin = prompt('Enter PIN to reveal passwords:');
+
+              // Send PIN to server for verification
+              fetch('/verify_pin', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ pin })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      // PIN verified, reveal all passwords
+                      document.querySelectorAll('.password_index').forEach(passwordElement => {
+                          passwordElement.textContent = passwordElement.dataset.password;
+                      });
+                      revealAllPasswordsButton.textContent = "Hide All Passwords";
+                      passwordsRevealed = true;
+                  } else {
+                      // PIN verification failed, display error message
+                      alert(data.message);
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  alert('An error occurred while verifying PIN.');
+              });
+          } else {
+              // Hide all passwords
+              document.querySelectorAll('.password_index').forEach(passwordElement => {
+                  passwordElement.textContent = '••••••••';
+              });
+              revealAllPasswordsButton.textContent = "Reveal All Passwords";
+              passwordsRevealed = false;
+          }
+      });
+  }
+});
 
 
 // Delete Passwords

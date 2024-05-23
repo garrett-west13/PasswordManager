@@ -14,6 +14,7 @@
                     <input name="search" type="search" class="form-control me-2" placeholder="Search">
                     <button class="btn btn-secondary" type="submit">Submit</button>
                 </form>
+
                 <form action="/" method="post" class="d-flex align-items-center" id="sortForm">
                     <select name="sort" class="form-select me-2" aria-label="Default select example">
                         <option value="" disabled selected>Sort by...</option>
@@ -23,14 +24,11 @@
                         <option value="notes">Notes</option>
                         <option value="created_at">Time Created</option>
                     </select>
-                    <input type="hidden" name="order" id="orderField" value="asc">
-                    <button type="button" id="ascButton" onclick="submitForm('asc')">
-                        <i class="fas fa-arrow-up"></i>
+                    <button type="button" id="toggleSortButton">
+                        <i class="fas fa-sort"></i>
                     </button>
-                    <button type="button" id="descButton" onclick="submitForm('desc')">
-                        <i class="fas fa-arrow-down"></i>
-                    </button>
-                </form>
+                </form>   
+                             
             </div>
         </div>
     </div>
@@ -105,10 +103,22 @@
 </div>
 
 <script>
-    function submitForm(order) {
+    document.addEventListener('DOMContentLoaded', () => {
+    const toggleSortButton = document.getElementById("toggleSortButton");
+    let sortOrder = ""; // Track sorting order (asc/desc)
+
+    if (toggleSortButton) {
+        toggleSortButton.addEventListener("click", () => {
+            sortOrder = sortOrder === "asc" ? "desc" : "asc";
+            submitSortForm(sortOrder);
+        });
+    }
+
+    function submitSortForm(order) {
         document.getElementById('orderField').value = order;
         document.getElementById('sortForm').submit();
     }
+});
 </script>
 
 {% endblock %}

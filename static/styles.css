@@ -1,84 +1,90 @@
-* {
+/* Global Styles */
+body {
     font-family: Arial, sans-serif;
     color: #333;
+    margin: 0;
+    padding: 0;
 }
 
 .hidden {
     display: none;
-  }
+}
 
-nav .navbar-brand
-{
+/* Navbar Styles */
+nav .navbar-brand {
     font-size: xx-large;
-    font-family: Arial, sans-serif;
     color: #333;
 }
 
-.notes-summary {
-    width: calc(100% - 20px); 
-    background-color: transparent; 
-    font-size: 14px; 
-    color: #333; 
-    font-family: Arial, sans-serif; 
-}
-
-/* Add styles for the arrow buttons */
-#ascButton,
-#descButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    color: #007bff; 
-    margin: 0 5px; 
-    transition: color 0.3s; 
-}
-
-#ascButton:hover,
-#descButton:hover {
-    color: #0056b3; 
-}
-
-
-
+/* Form Styles */
 form {
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
 
-
-#sortForm {
-    margin-bottom: 20px; 
+.form-control {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
 }
 
-
-.row .col {
-    margin-bottom: 10px; 
+/* Button Styles */
+.btn {
+    font-family: Arial, sans-serif;
 }
 
-
-#deleteForm {
-    margin-top: 20px; 
+#toggleSortButton {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
 }
 
+#toggleSortButton:hover {
+    color: #0056b3;
+}
 
+/* Table Styles */
 table {
-    margin-top: 20px; 
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.navbar {
-    margin-bottom: 20px; 
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
 }
 
+th {
+    background-color: #f2f2f2;
+}
+
+/* Row and Column Styles */
+.row .col {
+    margin-bottom: 10px;
+}
+
+/* Header Styles */
 .header {
     margin-bottom: 20px;
 }
 
+/* Main Content Styles */
 main {
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
 
+/* Heading Styles */
 h2 {
-    font-family: Arial, sans-serif;
     color: #333;
 }
 
+/* Notes Summary Styles */
+.notes-summary {
+    width: calc(100% - 20px);
+    background-color: transparent;
+}
+
+/* Icon Styles */
+.fa-sort {
+    font-size: 18px;
+}
