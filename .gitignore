@@ -28,6 +28,3 @@ flask_session/
 
 # Secret key
 secret.key
-
-# Git
-.gitignore

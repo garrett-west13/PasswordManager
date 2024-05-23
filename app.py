@@ -1,11 +1,11 @@
 import re
 import datetime
+import sqlite3
 
 from flask import Flask, flash, redirect, render_template, request, session, jsonify, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from cryptography.fernet import Fernet
-import sqlite3
 
 
 app = Flask(__name__)
