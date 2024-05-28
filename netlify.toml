@@ -1,7 +1,0 @@
-[build]
-  command = "gunicorn app:app"
-  publish = "app"
-  environment = {
-    "FLASK_APP" = "app.py",
-    "FLASK_ENV" = "production"
-  }
