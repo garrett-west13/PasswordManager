@@ -11,9 +11,6 @@ myenv/
 # Flask
 instance/
 
-# SQLite3
-*.db
-
 # Node.js
 node_modules/
 
@@ -28,3 +25,6 @@ flask_session/
 
 # Secret key
 secret.key
+
+# .env
+.env

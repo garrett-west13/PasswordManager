@@ -1,56 +1,49 @@
+import os
 import re
 import datetime
 import sqlite3
+import base64
 
 from flask import Flask, flash, redirect, render_template, request, session, jsonify, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from cryptography.fernet import Fernet
 
-
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 
-def load_key():
-    """
-    Load the previously generated key
-    """
-    try:
-        return open("secret.key", "rb").read()
-    except IOError:
-        return None
+# Load the secret key from environment variable
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    # If the environment variable is not set, generate a new key
+    SECRET_KEY = Fernet.generate_key()
+    # Convert the bytes value to a URL-safe base64-encoded string
+    encoded_key = base64.urlsafe_b64encode(SECRET_KEY).decode("utf-8")
+else:
+    # Convert the string value to bytes
+    SECRET_KEY = base64.urlsafe_b64decode(SECRET_KEY)
 
-def generate_key():
-    """
-    Generates a key and save it into a file
-    """
-    key = Fernet.generate_key()
-    with open("secret.key", "wb") as key_file:
-        key_file.write(key)
+# Configure the Flask app with the secret key
+app.config["SECRET_KEY"] = SECRET_KEY
 
-# Load the key
-key = load_key()
-
-# If the key does not exist, generate a new one
-if not key:
-    generate_key()
-    key = load_key()
-
-cipher = Fernet(key)
-
+cipher = Fernet(SECRET_KEY)
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
- 
- # Create database connection
+
 def get_db_connection():
-    if "user_id" not in session:
-        session.clear() 
-    conn = sqlite3.connect("/home/garrettwest13/PasswordManager/passwords.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+    try:
+        if "user_id" not in session:
+            session.clear() 
+        conn = sqlite3.connect("passwords.db")
+        conn.row_factory = sqlite3.Row
+        return conn
+    except sqlite3.OperationalError as e:
+        flash(f"Unable to establish database connection: {e}", "error")
+        return None
+
 
 # Index page
 @app.route("/", methods=["GET", "POST"])

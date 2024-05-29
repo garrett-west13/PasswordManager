@@ -82,10 +82,16 @@ if (deletePasswordButton) {
         checkbox.disabled = false;
       });
     } else {
+      const checkedCheckboxes = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+      if (checkedCheckboxes.length === 0) {
+        alert("Please select at least one password to delete.");
+        return; // Prevent form submission
+      }
       document.getElementById("deleteForm").submit();
     }
   });
 }
+
 
 // Convert to URL for redirecting
 function convertToURL(clickedLink) {
