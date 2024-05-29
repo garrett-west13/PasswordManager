@@ -48,7 +48,7 @@ Session(app)
 def get_db_connection():
     if "user_id" not in session:
         session.clear() 
-    conn = sqlite3.connect("passwords.db")
+    conn = sqlite3.connect("/home/garrettwest13/PasswordManager/passwords.db")
     conn.row_factory = sqlite3.Row
     return conn
 
