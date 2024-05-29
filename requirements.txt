@@ -11,7 +11,7 @@ Flask-Login==0.6.3
 Flask-Session==0.6.0
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
-greenlet==3.0.3
+greenlet<2.0,>=1.1.0
 iniconfig==2.0.0
 itsdangerous==2.1.2
 Jinja2==3.1.3
@@ -22,7 +22,7 @@ pycparser==2.21
 pytest==8.0.2
 SQLAlchemy==2.0.27
 tomli==2.0.1
-typing_extensions==4.9.0
+typing-extensions<4 
 visitor==0.1.3
 Werkzeug==3.0.1
 WTForms==3.1.2
