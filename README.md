@@ -23,7 +23,7 @@ Flask Password Manager App is a web application built using Flask, HTML, CSS, an
 - **URL Conversion**: Provided functionality to convert plain text URLs to clickable links with appropriate formatting.
 - **Toggle Password Visibility**: Enabled users to toggle password visibility for enhanced usability.
 - **Deletion Functionality**: Implemented a feature to delete passwords securely with a confirmation prompt.
-- **Deployment**: Deployed using pythonanywhere.
+- **Deployment**: Deployed using Heroku.
 
 #### Future Enhancements:
 
